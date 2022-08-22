@@ -15,6 +15,20 @@ public class StickmanManager : MonoBehaviour
         playerParent = GameObject.FindGameObjectWithTag("PlayerParent");
         boss = GameObject.FindGameObjectWithTag("Boss");
     }
+
+    private void Update()
+    {
+        if (playerParent.GetComponent<PlayerController>().isRun==false && gameObject.tag=="member")
+        {
+            gameObject.GetComponent<Animator>().SetBool("Run", false);
+        }
+        else if(gameObject.tag == "member")
+        {
+            gameObject.GetComponent<Animator>().SetBool("Run", true);
+        }
+
+        
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("stickman") && transform.parent != null )
@@ -29,8 +43,10 @@ public class StickmanManager : MonoBehaviour
 
         if (other.gameObject.CompareTag("enemy"))
         {
-            other.gameObject.SetActive(false);
-            GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
+            other.gameObject.GetComponent<Animator>().SetTrigger("Die");
+            other.gameObject.GetComponent<CapsuleCollider>().enabled = false;
+            playerParent.GetComponent<GameManager>().enemyList.Remove(other.gameObject);
+            gameObject.GetComponent<Animator>().SetTrigger("Die");
             StartCoroutine(RemoveFromList());
         }
 
@@ -43,11 +59,12 @@ public class StickmanManager : MonoBehaviour
             Destroy(effect, 1);
             playerParent.GetComponent<GameManager>().stickmanList.Remove(gameObject);
             gameObject.SetActive(false);
+            gameObject.transform.parent = null;
         }
 
         if (other.gameObject.CompareTag("jump"))
         {
-            transform.DOJump(transform.position + new Vector3(0, 0, 5), 3, 1, 1);
+            transform.DOMoveY(2.5f, 0.3f).SetLoops(2,LoopType.Yoyo);
         }
 
     }

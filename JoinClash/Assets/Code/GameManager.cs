@@ -6,7 +6,7 @@ using DG.Tweening;
 public class GameManager : MonoBehaviour
 {
     public List<GameObject> stickmanList = new List<GameObject>();
-    public GameObject[] enemyList;
+    public List<GameObject> enemyList;
 
     public float speed;
     public float moveToBoss;
@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        enemyList= GameObject.FindGameObjectsWithTag("enemy");
+        enemyList=new List<GameObject>( GameObject.FindGameObjectsWithTag("enemy"));
         boss = GameObject.FindGameObjectWithTag("Boss");
     }
 
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     {
         if (other.gameObject.CompareTag("attack"))
         {
-            for (int i = 1; i <= enemyList.Length; i++)
+            for (int i = 1; i <= enemyList.Count; i++)
             {
                 float distance = Mathf.Abs(stickmanList[stickmanList.Count - i].transform.position.z - enemyList[i - 1].transform.position.z);
 
